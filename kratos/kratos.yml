@@ -1,0 +1,74 @@
+version: v1.2.0
+dsn: postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}?sslmode=disable&max_conn_lifetime=1h
+
+log:
+  level: debug
+
+serve:
+  public:
+    base_url: http://localhost:4433/
+    cors:
+      enabled: true
+      allowed_origins:
+        - http://localhost:3000
+      allowed_methods:
+        - POST
+        - GET
+        - PUT
+        - PATCH
+        - DELETE
+      allowed_headers:
+        - Authorization
+        - Cookie
+        - Content-Type
+        - X-CSRF-Token
+      exposed_headers:
+        - Content-Type
+        - Set-Cookie
+      allow_credentials: true
+  admin:
+    base_url: http://localhost:4434/
+    
+    
+
+identity:
+  default_schema_id: default
+  schemas:
+    - id: default
+      url: file:///etc/config/kratos/identity.schema.json
+
+selfservice:
+  default_browser_return_url: http://localhost:3000/
+  flows:
+    error:
+      ui_url: http://localhost:3000/error
+    settings:
+      ui_url: http://localhost:3000/settings
+    verification:
+      ui_url: http://localhost:3000/verify
+    recovery:
+      ui_url: http://localhost:3000/recovery
+    registration:
+      ui_url: http://localhost:3000/auth/registration
+    login:
+      ui_url: http://localhost:3000/login
+  methods:
+    password:
+      enabled: true
+
+hashers:
+  argon2:
+    parallelism: 1
+    memory: "131072KB"
+    iterations: 2
+    salt_length: 16
+    key_length: 32
+
+secrets:
+  default:
+    - "youReallyNeedToChangeThis"
+
+cookies:
+  domain: localhost
+  path: /
+  same_site: None
